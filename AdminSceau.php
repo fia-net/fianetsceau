@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2014 PrestaShop
+ * 2007-2016 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,125 +19,151 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  *  @author    PrestaShop SA <contact@prestashop.com>
- *  @copyright 2007-2014 PrestaShop SA
+ *  @copyright 2007-2016 PrestaShop SA
  *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  *  International Registered Trademark & Property of PrestaShop SA
  */
 
 /* Load the correct class version for PS 1.4 or PS 1.5 */
-if (_PS_VERSION_ < '1.5')
-	include_once 'controllers/admin/AdminSceau.php';
-else
-	include_once 'controllers/admin/AdminSceauController.php';
+if (_PS_VERSION_ < '1.5') {
+    include_once 'controllers/admin/AdminSceau.php';
+} else {
+    include_once 'controllers/admin/AdminSceauController.php';
+}
 
-/**
- * Description of AdminSceau
- *
- * @author ycyrille
- */
 class AdminSceau extends AdminSceauController
 {
 
-	public function __construct()
-	{
-		parent::__construct();
+    public function __construct()
+    {
+        parent::__construct();
 
-		//specific instruction for PS 1.5 and greater
-		if (_PS_VERSION_ >= '1.5')
-		{
-			$this->tpl_folder = AdminModulesController::getController('AdminOrdersController')->tpl_folder;
-			$this->override_folder = AdminModulesController::getController('AdminOrdersController')->override_folder;
-			$link = new Link();
+        //specific instruction for PS 1.5 and greater
+        if (_PS_VERSION_ >= '1.5') {
+            $this->tpl_folder = AdminModulesController::getController('AdminOrdersController')->tpl_folder;
+            $this->override_folder = AdminModulesController::getController('AdminOrdersController')->override_folder;
+            $link = new Link();
 
-			//sets the redirection according to the action
-			switch (Tools::getValue('action'))
-			{
-				//if sendOrder, redirection to the admin order page
-				case 'ResendOrder':
-					$this->redirect_after = $link->getAdminLink('AdminSceau').'&id_order='.Tools::getValue('id_order').'&vieworder';
-					break;
+            //sets the redirection according to the action
+            switch (Tools::getValue('action')) {
+                //if sendOrder, redirection to the admin order page
+                case 'ResendOrder':
+                    $this->redirect_after = $link->getAdminLink('AdminSceau')
+                    . '&id_order=' . Tools::getValue('id_order') . '&vieworder';
+                    break;
 
-				//if unknown action
-				default:
-					break;
-			}
-		}
+                //if unknown action
+                default:
+                    break;
+            }
+        }
 
-		//build sql query which added to sql query of AdminOrders class
-		$this->_select .= ', fs.`label` as `fs_label`';
-		$this->_join .= 'LEFT JOIN `'._DB_PREFIX_.'fianetsceau_order` fo ON a.`id_order` = fo.`id_order`';
-		$this->_join .= 'LEFT JOIN `'._DB_PREFIX_.'fianetsceau_state` fs ON fo.`id_fianetsceau_state` = fs.`id_fianetsceau_state`';
+        //build sql query which added to sql query of AdminOrders class
+        $this->_select .= ', fs.`label` as `fs_label`, fo.`mode` as `fo_mode`';
+        $this->_join .= 'LEFT JOIN `' . _DB_PREFIX_ . 'fianetsceau_order` fo '
+            . 'ON a.`id_order` = fo.`id_order`';
+        $this->_join .= 'LEFT JOIN `' . _DB_PREFIX_ . 'fianetsceau_state` fs '
+            . 'ON fo.`id_fianetsceau_state` = fs.`id_fianetsceau_state`';
 
-		//icons management
-		if (_PS_VERSION_ >= '1.5')
-			$icons = array(
-				'sent' => array('src' => '../../modules/fianetsceau/img/sent.gif', 'alt' => 'Commande envoyée'),
-				'waiting payment' => array('src' => '../../modules/fianetsceau/img/waiting.gif', 'alt' => 'Commande en attente de paiement'),
-				'error' => array('src' => '../../modules/fianetsceau/img/not_concerned.png', 'alt' => 'Commande en erreur'),
-				'default' => '../../modules/fianetsceau/img/error.gif');
-		else
-			$icons = array(
-				'sent' => '../../modules/fianetsceau/img/sent.gif',
-				'waiting payment' => '../../modules/fianetsceau/img/waiting.gif',
-				'error' => '../../modules/fianetsceau/img/not_concerned.png',
-				'default' => '../../modules/fianetsceau/img/error.gif');
+        //icons management
+        if (_PS_VERSION_ >= '1.5') {
+            $icons = array(
+                'sent' => array('src' => '../../modules/fianetsceau/img/sent.gif',
+                    'alt' => 'Commande envoyée'),
+                'waiting payment' => array('src' => '../../modules/fianetsceau/img/waiting.gif',
+                    'alt' => 'Commande en attente de paiement'),
+                'error' => array('src' => '../../modules/fianetsceau/img/not_concerned.png',
+                    'alt' => 'Commande en erreur'),
+                'default' => array('src' => '../../modules/fianetsceau/img/error.gif',
+                    'alt' => 'Non concernée'));
+        } else {
+            $icons = array(
+                'sent' => '../../modules/fianetsceau/img/sent.gif',
+                'waiting payment' => '../../modules/fianetsceau/img/waiting.gif',
+                'error' => '../../modules/fianetsceau/img/not_concerned.png',
+                'default' => '../../modules/fianetsceau/img/error.gif');
+        }
 
-		//personalize new column added in new order tab
-		$column_definition = array(
-			'title' => $this->l('Sceau state'), //column name
-			'width' => 50,
-			'icon' => $icons);
+        //personalize new column added in new order tab
+        $column_definition = array(
+            'title' => $this->l('Sceau state'), //column name
+            'width' => 25,
+            'icon' => $icons);
 
-		if (_PS_VERSION_ >= '1.5')
-			$this->fields_list['fs_label'] = $column_definition;
-		else
-			$this->fieldsDisplay['fs_label'] = $column_definition;
+        $column_definition2 = array(
+            'title' => $this->l('Mode'), //column name
+            'width' => 25);
 
-		$this->module = Module::getInstanceByName('fianetsceau');
-	}
+        if (_PS_VERSION_ >= '1.5') {
+            $this->fields_list['fs_label'] = $column_definition;
+            $this->fields_list['fo_mode'] = $column_definition2;
+        } else {
+            $this->fieldsDisplay['fs_label'] = $column_definition;
+            $this->fieldsDisplay['fo_mode'] = $column_definition2;
+        }
 
-	public function postProcess()
-	{
-		switch (Tools::getValue('action'))
-		{
-			//resends all orders that would have been sent
-			case 'ResendOrders':
-				//gets the list of all orders to send
-				$orders = $this->getFianetSceauOrdersToResend();
-				//sends orders
-				foreach ($orders as $order)
-					$this->module->sendXML($order['id_order']);
+        $this->module = Module::getInstanceByName('fianetsceau');
+    }
 
-				break;
-			//resends an order that would have been sent
-			case 'ResendOrder':
-				//sends the order given in param
-				$this->module->sendXML(Tools::getValue('id_order'));
-				if (_PS_VERSION_ < '1.5')
-				{
-					$admin_dir = Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.Tools::substr(_PS_ADMIN_DIR_, strrpos(_PS_ADMIN_DIR_, '/') + 1);
-					$url = $admin_dir.'/index.php?tab=AdminSceau&id_order='.Tools::getValue('id_order').'&vieworder&token='.Tools::getAdminTokenLite('AdminSceau');
-					Tools::redirect($url, '');
-				}
-				break;
+    public function postProcess()
+    {
+        switch (Tools::getValue('action')) {
+            //resends all orders that would have been sent
+            case 'ResendOrders':
+                //gets the list of all orders to send
+                $orders = $this->getFianetSceauOrdersToResend();
+                //sends orders
+                foreach ($orders as $order) {
+                    $this->module->sendXML($order['id_order']);
+                }
 
-			default:
-				break;
-		}
+                break;
+            //resends an order that would have been sent
+            case 'ResendOrder':
+                //sends the order given in param
 
-		parent::postProcess();
-	}
+                if (Tools::getValue('old_order') == true) {
+                    $this->module->sendXML(Tools::getValue('id_order'), true);
+                } else {
+                    $this->module->sendXML(Tools::getValue('id_order'));
+                }
 
-	/**
-	 * get all orders with status 3 : error
-	 * 
-	 * @return Array 
-	 */
-	public function getFianetSceauOrdersToResend()
-	{
-		$sql = 'SELECT `id_order` FROM `'._DB_PREFIX_.FianetSceau::SCEAU_ORDER_TABLE_NAME.'` WHERE `id_fianetsceau_state` = 3';
-		$query_result = Db::getInstance()->executeS($sql);
-		return ($query_result);
-	}
+                if (_PS_VERSION_ < '1.5') {
+                    $admin_dir = Tools::getShopDomainSsl(true, true)
+                        . __PS_BASE_URI__ . Tools::substr(
+                            _PS_ADMIN_DIR_,
+                            strrpos(
+                                _PS_ADMIN_DIR_,
+                                '/'
+                            ) + 1
+                        );
+                    $url = $admin_dir
+                        . '/index.php?tab=AdminSceau&id_order='
+                        . Tools::getValue('id_order')
+                        . '&vieworder&token='
+                        . Tools::getAdminTokenLite('AdminSceau');
+                    Tools::redirect($url, '');
+                }
+                break;
 
+            default:
+                break;
+        }
+
+        parent::postProcess();
+    }
+
+    /**
+     * get all orders with status 3 : error
+     * 
+     * @return Array 
+     */
+    public function getFianetSceauOrdersToResend()
+    {
+        $sql = 'SELECT `id_order` '
+            . 'FROM `' . _DB_PREFIX_ . FianetSceau::SCEAU_ORDER_TABLE_NAME . '` '
+            . 'WHERE `id_fianetsceau_state` = 3';
+        $query_result = Db::getInstance()->executeS($sql);
+        return ($query_result);
+    }
 }

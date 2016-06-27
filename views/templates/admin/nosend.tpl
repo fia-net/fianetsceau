@@ -1,5 +1,5 @@
 {*
-* 2007-2014 PrestaShop
+* 2007-2016 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,14 +18,15 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2014 PrestaShop SA
+*  @copyright  2007-2016 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 <br/>
 <div class="panel">
 	<fieldset>
-		<legend><img src="{$logo_img|escape:'htmlall'}" width="16" height="16" alt=""/>{l s='FIA-NET Sceau status' mod='fianetsceau'}</legend>
-		<img src="{$fianetsceau_img|escape:'htmlall'}" alt=""/>{l s='The order was placed before the module installation FIA-NET.' mod='fianetsceau'}
+		<legend><img src="{$logo_img|escape:'htmlall':'UTF-8'}" width="16" height="16" alt=""/>{l s='FIA-NET Sceau status' mod='fianetsceau'}</legend>
+		<img src="{$fianetsceau_img|escape:'htmlall':'UTF-8'}" alt=""/>{l s='The order was placed before the module installation FIA-NET.' mod='fianetsceau'}
+		<p><a href="{$link|escape:'htmlall':'UTF-8'}"><img width="16" height="16" src="{$resend_img|escape:'htmlall':'UTF-8'}" alt=""/>{l s='Resend order' mod='fianetsceau'}</a></p>
 	</fieldset>
 </div>
