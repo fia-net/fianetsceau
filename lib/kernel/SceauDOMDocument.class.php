@@ -32,7 +32,7 @@ class SceauDOMDocument extends DOMDocument
 	public function __construct($xml_string)
 	{
 		parent::__construct('1.0', 'UTF-8');
-		$this->loadXML($xml_string);
+		@$this->loadXML($xml_string);
 		$this->root = $this->childNodes->item(0);
 	}
 

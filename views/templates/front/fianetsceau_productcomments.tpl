@@ -1,5 +1,5 @@
 {*
-* 2007-2014 PrestaShop
+* 2007-2017 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2014 PrestaShop SA
+*  @copyright  2007-2017 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
@@ -28,8 +28,7 @@ function fianetsceau_pagination(mode){
 	
 	var product_id = $("#fianetsceau_product_id").val();
 	var total_page = $("#fianetsceau_total_pages").val();
-	var current_page = $("#fianetsceau_current_page").text();
-		
+	var current_page = $("#fianetsceau_current_page").text();	
 	var current_limit_min = $("#fianetsceau_current_limit_min").val();
 	var nb_max_per_page = $("#fianetsceau_nb_max_comments_per_page").val();
 	var total_page = $("#fianetsceau_total_pages").attr('value');		
@@ -62,9 +61,10 @@ function fianetsceau_pagination(mode){
 		data: "traitement=pagination&limit_min="+current_limit_min+"&limit_max="+nb_max_per_page+"&product_id="+product_id+"&token="+token,
 		cache:false, 
 		success:function(reponse){
-				$("#fianetsceau_loader").hide();
-				$("#fianetsceau_comments").empty();
-				$("#fianetsceau_comments").append(reponse);
+                    
+                    $("#fianetsceau_loader").hide();
+                    $("#fianetsceau_comments").empty();
+                    $("#fianetsceau_comments").append(reponse);
 		}
 	})
 }	
@@ -74,9 +74,14 @@ function fianetsceau_pagination(mode){
 <br/>
 <div id="fianetsceau_general_content">
 	<div id="fianetsceau_global_note">
-	<div class="fianetsceau_left_content_global_note"><span class="fianetsceau_global_note_text">{l s='Reviews collected by' mod='fianetsceau'}</span><br/><img src='{$logo_path|strval}' alt='' /></div>
+	<div class="fianetsceau_left_content_global_note"><span class="fianetsceau_global_note_text">{l s='Reviews collected by' mod='fianetsceau'}</span><br/><img src='{$logo_path|escape:'htmlall':'UTF-8'}' alt='' /></div>
 	<div class="fianetsceau_center_content_global_note1"></div>
-	<div class="fianetsceau_center_content_global_note2"><span class="fianetsceau_global_note_text">{l s='Overall rating' mod='fianetsceau'}</span><div class="fianetsceau_space"></div>{$view_global_note|strval}<div class="fianetsceau_space"></div>{l s='on' mod='fianetsceau'} {$nb_comments} {l s='customer reviews' mod='fianetsceau'}</div>
+	<div class="fianetsceau_center_content_global_note2"><span class="fianetsceau_global_note_text">{l s='Overall rating' mod='fianetsceau'}</span><div class="fianetsceau_space"></div>
+            {foreach from=$view_global_note item=imgsrc name=img}
+                    <img src="{$imgsrc|escape:'htmlall':'UTF-8'}" alt="">
+            
+            {/foreach}
+            <div class="fianetsceau_space"></div>{l s='on' mod='fianetsceau'} {$nb_comments|escape:'htmlall':'UTF-8'} {l s='customer reviews' mod='fianetsceau'}</div>
 	<div class="fianetsceau_right_content_global_note"><span class="fianetsceau_positive_note">{if $entier_note == null}{$global_note|intval}{else}{$entier_note|intval}{/if}</span><span class="fianetsceau_positive_demie_note">{if $decimal_note|intval <> null},{$decimal_note|intval}{/if}</span>/5</div>
 	</div>
 	{$i = 1}
@@ -84,9 +89,13 @@ function fianetsceau_pagination(mode){
 		{foreach from=$product_comment item=comment name=product_comment}
 		<div class="fianetsceau_content">
 			<div class="fianetsceau_left_content">
-				{$comment.view_note|strval}<br/> {l s='by' mod='fianetsceau'} <span class="fianetsceau_capitalize">{$comment.firstname|strval}</span> <span class="fianetsceau_capitalize">{$comment.name|strval}</span><br/>{l s='at' mod='fianetsceau'} {$comment.date|strval}
+                            {foreach from=$comment.view_note item=imgsrc name=img}
+                                 <img src="{$imgsrc|escape:'htmlall':'UTF-8'}" alt="">
+                            {/foreach}
+                            
+				<br/> {l s='by' mod='fianetsceau'} <span class="fianetsceau_capitalize">{$comment.firstname|escape:'htmlall':'UTF-8'}</span> <span class="fianetsceau_capitalize">{$comment.name|escape:'htmlall':'UTF-8'}</span><br/>{l s='at' mod='fianetsceau'} {$comment.date|escape:'htmlall':'UTF-8'}
 			</div>
-			<div class="fianetsceau_right_content">{$comment.comment|strval}</div>
+			<div class="fianetsceau_right_content">{$comment.comment|escape:'htmlall':'UTF-8'}</div>
 		</div>
 		{if $i != $size_array}
 		<hr class="fianetsceau_hr" />
@@ -101,12 +110,12 @@ function fianetsceau_pagination(mode){
 		<div id="fianetsceau_pagination_next" class="fianetsceau_pagination_next" onclick="fianetsceau_pagination('next');">></div>
 		<div id="fianetsceau_pagination_page">page <span id="fianetsceau_current_page">1</span>/{$nb_total_pages|intval}</div>
 		<div id="fianetsceau_pagination_prev" class="fianetsceau_pagination_prev" onclick="fianetsceau_pagination('prev');"><</div>
-		<div id="fianetsceau_loader" style="display: none;"><img src="{$img_loader|strval}" /></div>
+		<div id="fianetsceau_loader" style="display: none;"><img src="{$img_loader|escape:'htmlall':'UTF-8'}" /></div>
 	</div>
 {/if}
 
-<input id="fianetsceau_script_path" type="hidden" value="{$script_path|strval}" />
-<input id="fianetsceau_token" type="hidden" value="{$token|strval}" />
+<input id="fianetsceau_script_path" type="hidden" value="{$script_path|escape:'htmlall':'UTF-8'}" />
+<input id="fianetsceau_token" type="hidden" value="{$token|escape:'htmlall':'UTF-8'}" />
 <input id="fianetsceau_total_pages" type="hidden" value="{$nb_total_pages|intval}" />
 <input id="fianetsceau_current_limit_min" type="hidden" value="{$current_limit_min|intval}" />
 <input id="fianetsceau_nb_max_comments_per_page" type="hidden" value="{$nb_max_comments_per_page|intval}" />

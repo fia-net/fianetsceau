@@ -1,5 +1,5 @@
 {*
-* 2007-2014 PrestaShop
+* 2007-2017 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 *  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2014 PrestaShop SA
+*  @copyright  2007-2017 PrestaShop SA
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
@@ -56,10 +56,24 @@ function loadSubCategories(elem_id){
 }	
 </script>
 {/literal}
+<div id='fianetsceau_admin_content'>
+{if $head_msg|escape:'htmlall':'UTF-8' <> ''}
+    <div class="fianetsceauconf">
+    <img src="{$path_confirmation|escape:'htmlall':'UTF-8'}" alt="" title="" />{$head_msg|escape:'htmlall':'UTF-8'}</div>
+{/if}
 
-{$head_message|strval}
+{if $error_msg|escape:'htmlall':'UTF-8' <> ''}
+    <div class="fianetsceauerror">
+	<img src="{$path_error|escape:'htmlall':'UTF-8'}" alt="" title="" />{$error_msg|escape:'htmlall':'UTF-8'}
+	<ul>
+	{foreach from=$errors item=error_label name=errors}
+	    <li>{$error_label|escape:'htmlall':'UTF-8'}</li>
+	{/foreach}
+	</ul>
+    </div>
+{/if}
 <fieldset>
-	<legend><img src="{$image_path|escape:'htmlall'}" />FIA-NET - Sceau de Confiance</legend>
+	<legend><img src="{$image_path|escape:'htmlall':'UTF-8'}" />FIA-NET - Sceau de Confiance</legend>
 
 	<b>Le Sceau de Confiance FIA-NET, leader de la confiance sur le web, influence la d&eacute;cision de r&eacute;achat de 83 % des internautes.</b>
 
@@ -69,20 +83,20 @@ function loadSubCategories(elem_id){
 	<b>L'extranet, un outil d'analyse de performance unique</b>, exploite les r&eacute;ponses de vos clients &agrave; ces questionnaires. Une aide inestimable qui vous permet de mieux connaitre vos clients et de piloter votre politique marketing et communication.
 	<br /><br />
 
-	<p>{l s='To sign in, check out:' mod='fianetsceau'}<u><a href="https://www.fia-net.com/marchands/devispartenaire.php?p=185" target="_blank">{l s='Fia-net Website' mod='fianetsceau'}</a></u></p>
+	<p>{l s='To sign in, check out:' mod='fianetsceau'}<u><a href="http://www.fia-net-group.com/formulaire-de-contact-prestashop/" target="_blank">{l s='Fia-net Website' mod='fianetsceau'}</a></u></p>
 </fieldset>
 <br />
 
 <form action="" method="post">
 	<fieldset>
-		<legend><img src="{$logo_account_path|escape:'htmlall'}" />{l s='Account settings' mod='fianetsceau'}</legend>
+		<legend><img src="{$logo_account_path|escape:'htmlall':'UTF-8'}" />{l s='Account settings' mod='fianetsceau'}</legend>
 		<label>{l s='Login' mod='fianetsceau'}</label>
 		<div class="margin-form">
-			<input type="text" name="fianetsceau_login" value="{$fianetsceau_login|escape:'htmlall'}"/>
+			<input type="text" name="fianetsceau_login" value="{$fianetsceau_login|escape:'htmlall':'UTF-8'}"/>
 		</div>
 		<label>{l s='Password' mod='fianetsceau'}</label>
 		<div class="margin-form">
-			<input type="text" name="fianetsceau_password" value="{$fianetsceau_password|escape:'htmlall'}"/>
+			<input type="text" name="fianetsceau_password" value="{$fianetsceau_password|escape:'htmlall':'UTF-8'}"/>
 		</div>
 		<label>{l s='Site ID' mod='fianetsceau'}</label>
 		<div class="margin-form">
@@ -90,13 +104,13 @@ function loadSubCategories(elem_id){
 		</div>
 		<label>{l s='Authkey' mod='fianetsceau'}</label>
 		<div class="margin-form">
-			<input type="text" name="fianetsceau_authkey" value="{$fianetsceau_authkey|escape:'htmlall'}"/>
+			<input type="text" name="fianetsceau_authkey" value="{$fianetsceau_authkey|escape:'htmlall':'UTF-8'}"/>
 		</div>
 		<label>{l s='Production mode' mod='fianetsceau'}</label>
 		<div class="margin-form">
 			<select name="fianetsceau_status">
 				{foreach from=$fianetsceau_statuses item=fianetsceau_status_name name=fianetsceau_status}
-					<option value="{$fianetsceau_status_name|escape:'htmlall'}" {if $fianetsceau_status_name eq $fianetsceau_status}Selected{/if}>{l s=$fianetsceau_status_name|escape:'htmlall' mod='fianetsceau'}</option>
+					<option value="{$fianetsceau_status_name|escape:'htmlall':'UTF-8'}" {if $fianetsceau_status_name eq $fianetsceau_status}Selected{/if}>{l s=$fianetsceau_status_name|escape:'htmlall':'UTF-8' mod='fianetsceau'}</option>
 				{/foreach}
 			</select>
 		</div>
@@ -104,12 +118,22 @@ function loadSubCategories(elem_id){
 		<div class="margin-form">
 			<input name="fianetsceau_showstatus" type="checkbox" value="1" {if $fianetsceaushow_status eq '1'}Checked{/if} /> 
 		</div>
+		
+		<label>{l s='Send order status' mod='fianetsceau'}</label>
+		<div class="margin-form">
+			<select name="fianetsceau_orderstate">
+				<option value="0">-- {l s='Choose' mod='fianetsceau'} --</option>
+				{foreach from=$order_states item=order name=fianetsceau_orderstate}
+					<option value="{$order.id_order_state|escape:'htmlall':'UTF-8'}" {if $order.id_order_state eq $fianetsceau_orderstate}Selected{/if}>{l s=$order.name|strval mod='fianetsceau'}</option>
+				{/foreach}
+			</select>
+		</div>
 	</fieldset>
 
 	<br />
 
 	<fieldset>
-		<legend><img src="{$logo_categories_path|escape:'htmlall'}"/>{l s='Category settings' mod='fianetsceau'}</legend>
+		<legend><img src="{$logo_categories_path|escape:'htmlall':'UTF-8'}"/>{l s='Category settings' mod='fianetsceau'}</legend>
 		<label>{l s='Default Product Type' mod='fianetsceau'}</label>
 		<div class="margin-form">
 			<select id="fianetsceau_0_category" name="fianetsceau_0_category" onChange="loadSubCategories(0);">
@@ -138,7 +162,7 @@ function loadSubCategories(elem_id){
 				<tbody>
 					{foreach from=$shop_categories key=id item=shop_category name=shop_categories}
 						<tr>
-							<td>{$shop_category.name|escape:'htmlall'}</td>
+							<td>{$shop_category.name|escape:'htmlall':'UTF-8'}</td>
 							<td>
 								<select id="fianetsceau_{$id|intval}_category" name="fianetsceau_{$id|intval}_category" onChange="loadSubCategories({$id|intval});">
 									<option value="0">-- {l s='Choose' mod='fianetsceau'} --</option>
@@ -149,7 +173,7 @@ function loadSubCategories(elem_id){
 							</td>
 							<td>
 								<span id="subcategory_{$id|intval}">
-									<select id="fianetsceau_{$id}_subcategory" name="fianetsceau_{$id|intval}_subcategory">
+									<select id="fianetsceau_{$id|escape:'htmlall':'UTF-8'}_subcategory" name="fianetsceau_{$id|escape:'htmlall':'UTF-8'}_subcategory">
 										<option value="0">-- {l s='Choose' mod='fianetsceau'} --</option>
 										{foreach from=$fianetsceau_subcategories item=subcategory_name key=subcategory_id name=subcategories_name}
 											{if $shop_category.parent_id eq $subcategory_name.parent_id}
@@ -169,7 +193,7 @@ function loadSubCategories(elem_id){
 	<br />
 
 	<fieldset>
-		<legend><img src="{$logo_payments_path|escape:'htmlall'}" />{l s='Payment modules settings' mod='fianetsceau'}</legend>
+		<legend><img src="{$logo_payments_path|escape:'htmlall':'UTF-8'}" />{l s='Payment modules settings' mod='fianetsceau'}</legend>
 		<div class="margin-form">
 			<table cellspacing="0" cellpadding="0" class="table">
 				<thead>
@@ -181,11 +205,11 @@ function loadSubCategories(elem_id){
 				<tbody>
 					{foreach from=$payment_modules key=id_payment_module item=payment_module name=payment_modules}
 						<tr>
-							<td>{$payment_module.name|escape:'htmlall'}</td>
+							<td>{$payment_module.name|escape:'htmlall':'UTF-8'}</td>
 							<td>
 								<select name="fianetsceau_{$id_payment_module|intval}_payment_type">
 									{foreach from=$fianetsceau_payment_types key=id_fianetsceau_payment_type item=fianetsceau_payment_type name=fianetsceau_payment_types}
-										<option value="{$id_fianetsceau_payment_type|escape:'htmlall'}" {if $payment_module.fianetsceau_type eq $id_fianetsceau_payment_type}Selected{/if}>{$fianetsceau_payment_type|escape:'htmlall'}</option>
+										<option value="{$id_fianetsceau_payment_type|escape:'htmlall':'UTF-8'}" {if $payment_module.fianetsceau_type eq $id_fianetsceau_payment_type}Selected{/if}>{$fianetsceau_payment_type|escape:'htmlall':'UTF-8'}</option>
 									{/foreach}
 								</select>
 							</td>
@@ -199,12 +223,12 @@ function loadSubCategories(elem_id){
 	<br />
 
 	<fieldset>
-		<legend><img src="{$logo_account_path|escape:'htmlall'}" />{l s='Logo settings' mod='fianetsceau'}</legend>
+		<legend><img src="{$logo_account_path|escape:'htmlall':'UTF-8'}" />{l s='Logo settings' mod='fianetsceau'}</legend>
 		<label>{l s='Logo position' mod='fianetsceau'}</label>
 		<div class="margin-form">
 			<select name="fianetsceau_logo_position">
 				{foreach from=$fianetsceau_logo_positions key=fianetsceau_logo_position_key item=fianetsceau_logo_position_name name=fianetsceau_logo_positions}
-					<option value="{$fianetsceau_logo_position_key|escape:'htmlall'}" {if $fianetsceau_logo_position_key eq $fianetsceau_logo_position}Selected{/if}>{l s=$fianetsceau_logo_position_name|strval mod='fianetsceau'}</option>
+					<option value="{$fianetsceau_logo_position_key|escape:'htmlall':'UTF-8'}" {if $fianetsceau_logo_position_key eq $fianetsceau_logo_position}Selected{/if}>{l s=$fianetsceau_logo_position_name|strval mod='fianetsceau'}</option>
 				{/foreach}
 			</select><br /><br />
 
@@ -214,7 +238,7 @@ function loadSubCategories(elem_id){
 				</tr>
 				{foreach from=$fianetsceau_logo_sizes key=fianetsceau_logo_size item=fianetsceau_logo_img}
 					<tr>
-						<td><input type="radio" name=fianetsceau_logo_sizes value="{$fianetsceau_logo_size|escape:'htmlall'}" {if $fianetsceau_logo_size eq $fianetsceau_logo}Checked{/if}></td><td><img src="{$fianetsceau_logo_img|escape:'htmlall'}" /></td>
+						<td><input type="radio" name=fianetsceau_logo_sizes value="{$fianetsceau_logo_size|escape:'htmlall':'UTF-8'}" {if $fianetsceau_logo_size eq $fianetsceau_logo}Checked{/if}></td><td><img src="{$fianetsceau_logo_img|escape:'htmlall':'UTF-8'}" /></td>
 						{/foreach}
 				</tr>
 			</table>
@@ -224,7 +248,7 @@ function loadSubCategories(elem_id){
 	<br/>
 
 	<fieldset>
-		<legend><img src="{$logo_account_path|escape:'htmlall'}" />{l s='Widget settings' mod='fianetsceau'}</legend>
+		<legend><img src="{$logo_account_path|escape:'htmlall':'UTF-8'}" />{l s='Widget settings' mod='fianetsceau'}</legend>
 		<label>{l s='Widget position' mod='fianetsceau'}</label>
 		<div class="margin-form">
 			<select name="fianetsceau_widget_position">
@@ -232,7 +256,7 @@ function loadSubCategories(elem_id){
 				{foreach from=$fianetsceau_widget_positions key=fianetsceau_widget_position_key item=fianetsceau_widget_position_name name=fianetsceau_widget_positions}
 				{if $i % 2 eq 1}{/if}
 				{$i|intval % 2}
-				<option value="{$fianetsceau_widget_position_key|escape:'htmlall'}" {if $fianetsceau_widget_position_key eq $fianetsceau_widget_position}Selected{/if}>{l s=$fianetsceau_widget_position_name|strval mod='fianetsceau'}</option>
+				<option value="{$fianetsceau_widget_position_key|escape:'htmlall':'UTF-8'}" {if $fianetsceau_widget_position_key eq $fianetsceau_widget_position}Selected{/if}>{l s=$fianetsceau_widget_position_name|strval mod='fianetsceau'}</option>
 				{$i = $i + 1}
 			{/foreach}
 			</table>
@@ -249,7 +273,7 @@ function loadSubCategories(elem_id){
 			{$i = 1}
 			{foreach from=$fianetsceau_widget_numbers item=fianetsceau_widget_number}
 			{if $i mod 2 eq 1}<tr>{/if}
-				<td><input type="radio" name=fianetsceau_widget_number value="{$fianetsceau_widget_number|escape:'htmlall'}" {if $fianetsceau_widget_number eq $widget_number}Checked{/if} /></td><td><p><img src="{$path_prefix|escape:'htmlall'}/{$fianetsceau_widget_number|escape:'htmlall'}.png" /></p></td>
+				<td><input type="radio" name=fianetsceau_widget_number value="{$fianetsceau_widget_number|escape:'htmlall':'UTF-8'}" {if $fianetsceau_widget_number eq $widget_number}Checked{/if} /></td><td><p><img src="{$path_prefix|escape:'htmlall':'UTF-8'}/{$fianetsceau_widget_number|escape:'htmlall':'UTF-8'}.png" /></p></td>
 			{if $i mod 2 eq 0}</tr>{/if}
 			{$i = $i + 1}
 		{/foreach}
@@ -258,7 +282,7 @@ function loadSubCategories(elem_id){
 </fieldset>
 <br/>
 <center><input type="submit" name="submitSettings" value="{l s='Save' mod='fianetsceau'}" class="button" /></center>
-<input id="token_fianetsceau" name="token_fianetsceau" type="hidden" value="{$token|escape:'htmlall'}" />
+<input id="token_fianetsceau" name="token_fianetsceau" type="hidden" value="{$token|escape:'htmlall':'UTF-8'}" />
 <input id="id_shop_fianetsceau" name="id_shop_fianetsceau" type="hidden" value="{$id_shop|intval}" />
 </form>
 <br/>
@@ -266,8 +290,8 @@ function loadSubCategories(elem_id){
 <br/>
 <center>
 	<fieldset id="sceau_log" style="display:none;">
-		<textarea cols="150" rows="10" readonly="readonly">{$log_content|strval}</textarea>
+		<textarea cols="150" rows="10" readonly="readonly">{$log_content|escape:'htmlall':'UTF-8'}</textarea>
 		<br/>
 	</fieldset>
 </center>
-
+</div>
